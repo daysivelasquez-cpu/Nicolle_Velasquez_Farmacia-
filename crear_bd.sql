@@ -1,5 +1,5 @@
 -- ==========================================
---  FARMACIA
+--                FARMACIA
 -- ==========================================
 
 CREATE DATABASE IF NOT EXISTS farmacia_db
@@ -134,7 +134,108 @@ CREATE TABLE IF NOT EXISTS detalle_venta (
 ) ENGINE=InnoDB;
 
 -- ==========================================
--- VERIFICAR LAS TABLAS CREADAS
+-- DATOS DE PRUEBA
+-- ==========================================
+
+-- 1. CATEGORIAS
+
+INSERT INTO categorias (nombre, descripcion) VALUES
+('Analgésicos', 'Medicamentos para aliviar el dolor'),
+('Antigripales', 'Productos para síntomas de gripe'),
+('Vitaminas', 'Vitaminas y suplementos'),
+('Higiene', 'Productos de higiene personal');
+
+-- 2. PRODUCTOS
+
+INSERT INTO productos
+(nombre, categoria_id, precio, stock, requiere_receta) VALUES
+('Paracetamol 500 mg', 1, 35.00, 100, FALSE),
+('Ibuprofeno 400 mg', 1, 55.00, 80, FALSE),
+('Antigripal tabletas', 2, 85.00, 50, FALSE),
+('Vitamina C', 3, 65.00, 60, FALSE),
+('Amoxicilina 500 mg', 1, 120.00, 30, TRUE),
+('Alcohol antiséptico', 4, 40.00, 45, FALSE);
+
+-- 3. PROVEEDORES
+
+INSERT INTO proveedores
+(razon_social, ruc, contacto, telefono) VALUES
+('Distribuidora Farmacéutica Central', '08011999123456', 'Carlos López', '98765432'),
+('Medicamentos del Valle', '08011999876543', 'María Flores', '97654321'),
+('Suministros Médicos Honduras', '08011999765432', 'José Martínez', '96543210');
+
+-- 4. LOTES
+
+INSERT INTO lotes
+(producto_id, proveedor_id, numero_lote, fecha_vencimiento, cantidad) VALUES
+(1, 1, 'PAR-2026-001', '2027-12-31', 100),
+(2, 1, 'IBU-2026-001', '2027-08-30', 80),
+(3, 2, 'ANT-2026-001', '2027-06-30', 50),
+(4, 3, 'VIT-2026-001', '2028-01-31', 60),
+(5, 2, 'AMO-2026-001', '2027-10-31', 30),
+(6, 3, 'ALC-2026-001', '2028-03-31', 45);
+
+-- 5. USUARIOS
+-- Las contraseñas siguientes son datos ficticios de prueba.
+-- No son hashes válidos para autenticación real.
+
+INSERT INTO usuarios (username, password_hash, rol) VALUES
+('admin', 'HASH_DE_PRUEBA_ADMIN', 'Administrador'),
+('vendedor1', 'HASH_DE_PRUEBA_VENDEDOR', 'Vendedor'),
+('vendedor2', 'HASH_DE_PRUEBA_VENDEDOR2', 'Vendedor');
+
+-- 6. VENTAS
+
+INSERT INTO ventas (fecha, total, usuario_id) VALUES
+('2026-10-20 09:30:00', 105.00, 2),
+('2026-10-21 11:15:00', 195.00, 3),
+('2026-10-22 14:00:00', 130.00, 2);
+
+-- 7. DETALLES DE VENTA
+
+INSERT INTO detalle_venta
+(venta_id, lote_id, cantidad, precio) VALUES
+(1, 1, 2, 35.00),
+(1, 6, 1, 35.00),
+(2, 2, 1, 55.00),
+(2, 3, 1, 85.00),
+(2, 4, 1, 55.00),
+(3, 4, 2, 65.00);
+
+-- ==========================================
+-- CONSULTAS PARA VERIFICAR LOS DATOS
 -- ==========================================
 
 SHOW TABLES;
+
+SELECT * FROM categorias;
+SELECT * FROM productos;
+SELECT * FROM proveedores;
+SELECT * FROM lotes;
+SELECT * FROM usuarios;
+SELECT * FROM ventas;
+SELECT * FROM detalle_venta;
+
+-- Consultar ventas con el usuario que las registró
+
+SELECT
+    v.id AS venta_id,
+    v.fecha,
+    u.username AS usuario,
+    v.total
+FROM ventas v
+INNER JOIN usuarios u ON v.usuario_id = u.id;
+
+-- Consultar detalles de ventas con productos y lotes
+
+SELECT
+    dv.id AS detalle_id,
+    dv.venta_id,
+    p.nombre AS producto,
+    l.numero_lote,
+    dv.cantidad,
+    dv.precio,
+    dv.cantidad * dv.precio AS subtotal
+FROM detalle_venta dv
+INNER JOIN lotes l ON dv.lote_id = l.id
+INNER JOIN productos p ON l.producto_id = p.id;
