@@ -15,6 +15,6 @@ categorias , productos (nombre, categoria_id, precio, requiere_receta), proveedo
 - GET /lotes/por-vencer?dias=30
 - Reporte valor inventario por categoría
 
-#Diagramas 
+# Diagramas 
 - diagrama_ER.png
 - diagrama_UML.png 
