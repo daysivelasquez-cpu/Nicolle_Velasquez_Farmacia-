@@ -4,7 +4,10 @@ Estudiante: Daysi Nicolle Velasquez Chaver
 Sistema para control de inventario por lotes con fechas y vencimientos
 
 # Tablas 
-categorias , productos (nombre, categoria_id, precio, requiere_receta), proveedores , lotes (producto_id, proveedor_id, numero_lote, fecha_vencimiento, cantidad), Ventas (fecha, total, usuario_id), detalle_venta (venta_id, lote_id, cantidad, precio).
+- categorias , productos (nombre, categoria_id, precio, requiere_receta)
+- proveedores , lotes (producto_id, proveedor_id, numero_lote, fecha_vencimiento, cantidad)
+- Ventas (fecha, total, usuario_id) 
+- detalle_venta (venta_id, lote_id, cantidad, precio).
 
 # Reglas de negocio 
 1. No vender lotes vencidos
